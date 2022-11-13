@@ -1,0 +1,12 @@
+*,*::before,*::after {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --peach:#F8B195;
+    --strawberry: #F67280;
+    --aqua:#355C7D;
+
+}
