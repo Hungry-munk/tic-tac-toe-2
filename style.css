@@ -147,6 +147,11 @@ div.board div.boardCell {
     background-color:var(--white) ;
     border-radius: var(--border-radius);
     cursor: pointer;
+    font-size: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: ;
 }
 div.board div.boardCell:hover {
     transform: scale(1.05);
