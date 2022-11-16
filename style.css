@@ -49,6 +49,7 @@ main {
     align-items: center;
     flex-direction: column;
     gap: 50px;
+    display: none;
 }
 
 .inputContainer {
@@ -133,6 +134,23 @@ button.startBtn:active {
     /* will do later */
 }
 
+/* board styling */
+
+div.board {
+    display: grid;
+    grid-template: repeat(3,minmax(80px,100px)) / repeat(3,minmax(80px,100px));
+    gap: 10px;
+    transform: ease-in-out 10ms;
+}
+
+div.board div.boardCell {
+    background-color:var(--white) ;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+div.board div.boardCell:hover {
+    transform: scale(1.05);
+}
 footer {
     text-align: center;
     padding: 10px 0;
