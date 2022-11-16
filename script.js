@@ -1,4 +1,4 @@
-const player = (name, sign,isAi=false,score=0)=> ({
+let player = (name, sign,isAi=false,score=0)=> ({
     name,
     sign,
     isAi,
@@ -29,7 +29,40 @@ const board = (()=> {
     }
 })();
 
-const gameController = (()=>{
-    _boardGrid = [...document.querySelectorAll('.boardCell')]
+const game = (()=>{
+    // getting boards
+   const _boardGrid = [...document.querySelectorAll('.boardCell')];
+   const _htmlboard = document.querySelector('.board')
 
+//    setting up players
+   let playerX = player("","X")
+   let playerO = player("","O")
+
+   const getPlayerO = ()=> playerO
+   const getPlayerX = ()=> playerX
+
+    const getCurrentPlayer = () => {
+        const moveCounter = board.getBoard().reduce((obj,arrayItem)=>{
+            if (!obj[arrayItem]) {
+                obj[arrayItem] = 0
+            }
+            obj[arrayItem]++
+            return obj
+        }, {});
+
+        return moveCounter["X"] == moveCounter['O'] ? playerX : playerO
+    }
+
+    _boardGrid.forEach(grid => {
+        grid.addEventListener('click',()=>{
+            console.log(getCurrentPlayer())
+        })
+    })
+
+   return {
+        getPlayerO,
+        getPlayerX,
+        getCurrentPlayer,
+
+   }
 })();
