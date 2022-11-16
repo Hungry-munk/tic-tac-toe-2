@@ -151,7 +151,6 @@ div.board div.boardCell {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: ;
 }
 div.board div.boardCell:hover {
     transform: scale(1.05);
@@ -191,6 +190,10 @@ input[type='checkbox']::before {
 input:checked[type="checkbox"]::before {
     background-color: var(--light-green);
     left: 1.5rem;
+}
+
+a {
+    color:black;
 }
 
 /* media queries */
