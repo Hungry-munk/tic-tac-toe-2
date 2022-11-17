@@ -19,7 +19,7 @@ const board = (()=> {
     }
 
     const cleanBoard = ()=> {
-        let _board = new Array(9).fill(null)
+        _board = new Array(9).fill(null)
     }
 
     return {
@@ -140,10 +140,11 @@ const nonGameFuncionality = (()=>{
     const _score = document.querySelector('.score')
     const _rematchBtn = document.querySelector(".rematchBtn")
     const _modaBlocker = document.querySelector('.endModalBlocker')
+    const _board = document.querySelector(".board")
 
     const displayWinner = (winnerName)=> {
         _endModal.style.visibility = "visible" 
-        _modaBlocker.classList.add("visible")
+        _modaBlocker.classList.add("modalHidden")
 
         _winner.textContent = `${winnerName} wins!`
         _score.textContent = `${gamefunctionality.getPlayerX().name} : ${gamefunctionality.getPlayerX().score} 
@@ -155,10 +156,40 @@ const nonGameFuncionality = (()=>{
                 _score.classList.add("visible")
                 setTimeout(()=>{
                     _rematchBtn.classList.add("visible")
-                },200)
+                },300)
             },300)
-        },300)
+        },200)
     }
+
+    const restartGame = ()=>{
+        setTimeout(()=>{
+            _rematchBtn.classList.remove("visible")
+            setTimeout(()=>{
+                _score.classList.remove("visible")
+                setTimeout(()=>{
+                    _winner.classList.remove("visible")
+                    setTimeout(()=>{
+                        _endModal.style.visibility = "hidden" 
+                        _modaBlocker.classList.remove("modalHidden")
+                        board.cleanBoard()
+                        _board.classList.remove("hidden")
+                        _board.classList.add("visible")
+                        _board.childNodes.forEach(node=>{
+                            node.textContent = ""
+                        })
+                        setTimeout(()=>{
+
+                        },200)
+
+                    },300)
+                },300)
+            },300)
+        },200);
+
+
+    }
+
+    _rematchBtn.addEventListener("click",restartGame)
 
     return {
         displayWinner,

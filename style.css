@@ -140,7 +140,12 @@ div.board {
     display: grid;
     grid-template: repeat(3,minmax(80px,100px)) / repeat(3,minmax(80px,100px));
     gap: 10px;
-    transform: ease-in-out 10ms;
+    transform: ease-in-out 0.4s;
+}
+
+div.hidden {
+    transform: scale(0);
+    transform: ease-in-out 0.4s;
 }
 
 div.board div.boardCell {
@@ -184,10 +189,13 @@ div.endModal {
     top: 0;
     width: 100vw;
     height: 100vh;
+    visibility: hidden;
+}
+.endModalBlocker.modalHidden {
     background-color: var(--dark-gray);
     opacity: 0.3;
-    transform: scale(0);
-    visibility: hidden;
+    visibility: visible;
+    transition: 0.8s ease-in-out;
 }
 
 .modalItem {
@@ -205,6 +213,7 @@ div.visible,
 button.visible {
     transform: scale(1);
     visibility: visible;
+    transition: 0.4s ease-in-out;
 }
 
 .endModal button{
