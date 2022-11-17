@@ -54,8 +54,8 @@ const game = (()=>{
     }
 
     _boardGrid.forEach(grid => {
-        grid.addEventListener('click',()=>{
-            console.log(getCurrentPlayer())
+        grid.addEventListener('click',event=>{
+            board.makeMove(event.target,getCurrentPlayer())
         })
     })
 
@@ -63,6 +63,5 @@ const game = (()=>{
         getPlayerO,
         getPlayerX,
         getCurrentPlayer,
-
    }
 })();
