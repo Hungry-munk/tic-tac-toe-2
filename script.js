@@ -12,9 +12,9 @@ const board = (()=> {
 
     const makeMove = (grid,player)=> {
         const gridIndex = parseInt(grid.getAttribute('cellNumber'))
-        if (!grid.textContent && !_board[gridIndex]) {
+        if (!grid.innerText && !_board[gridIndex]) {
             _board[gridIndex] = player.sign
-            grid.textContent = player.sign
+            grid.innerText = player.sign
         }
     }
 
@@ -30,7 +30,9 @@ const board = (()=> {
 })();
 
 const gameLogic = (()=>{
-    const winningConditions = [
+    const _htmlboard = document.querySelector('.board')
+    console.log(_htmlboard)
+    const _winningConditions = [
         // winning coloumsn
         [0,1,2],
         [3,4,5],
@@ -45,53 +47,75 @@ const gameLogic = (()=>{
     ];
 
     const hasWon = () => {
-        return winningConditions.some(winningCondition => (
-            (board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[1]]) && (
-             board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[2]]) && (
-             board.getBoard()[winningCondition[0]] === "X" || board.getBoard()[winningCondition[0]] === "O"
-            )
-        ));
-    };
-
-    return {
-        hasWon,
-    }
-})();
-
-const game = (()=>{
-    // getting boards
-   const _boardGrid = [...document.querySelectorAll('.boardCell')];
-   const _htmlboard = document.querySelector('.board')
-
-//    setting up players
-   let playerX = player("","X")
-   let playerO = player("","O")
- 
-   const getPlayerO = ()=> playerO
-   const getPlayerX = ()=> playerX
-
-    const getCurrentPlayer = () => {
-        const moveCounter = board.getBoard().reduce((obj,arrayItem)=>{
-            if (!obj[arrayItem]) {
-                obj[arrayItem] = 0
-            }
-            obj[arrayItem]++
-            return obj
-        }, {});
-        return moveCounter["X"] == moveCounter["O"] ? playerX : playerO
-    }
-
-    _boardGrid.forEach(grid => {
-        grid.addEventListener('click',event=>{
-            board.makeMove(event.target,getCurrentPlayer())
-            
+        let winningCondition = _winningConditions.find(winningCondition => {
+            if  ((board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[1]]) && (
+                board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[2]]) && (
+                board.getBoard()[winningCondition[0]] === "X" || board.getBoard()[winningCondition[0]] === "O"
+            )) return true
         })
+        return !!winningCondition ? winningCondition : false
+    }
+
+    
+    const boardObserver = new MutationObserver(entries=>{
+        console.log(hasWon())
+    })
+    
+    boardObserver.observe(_htmlboard, {
+        subtree: true,
+        childList: true,
     })
 
-   return {
-        getPlayerO,
-        getPlayerX,
-        getCurrentPlayer,
-   }
+    
+    
+    return {
+        hasWon,
+
+    }
 })();
 
+const gamefunctionality = (()=>{
+    // getting boards
+    const _boardGrid = [...document.querySelectorAll('.boardCell')]; 
+
+     // setting up players
+    let playerX = player("","X")
+    let playerO = player("","O")
+  
+    const getPlayerO = ()=> playerO
+    const getPlayerX = ()=> playerX 
+
+     const getCurrentPlayer = () => {
+         const moveCounter = board.getBoard().reduce((obj,arrayItem)=>{
+             if (!obj[arrayItem]) {
+                 obj[arrayItem] = 0
+             }
+             obj[arrayItem]++
+             return obj
+         }, {});
+         return moveCounter["X"] == moveCounter["O"] ? playerX : playerO
+     } 
+
+     _boardGrid.forEach(grid => {
+         grid.addEventListener('click',event=>{
+             board.makeMove(event.target,getCurrentPlayer())  
+         })
+     }) 
+
+     _boardGrid.forEach(grid => {
+         grid.addEventListener('input',event=>{
+             console.log(event)
+         })
+     }) 
+ 
+
+    return {
+         getPlayerO,
+         getPlayerX,
+         getCurrentPlayer,
+ }
+})();
+
+const nonGameFuncionality = (()=>{
+
+})();
