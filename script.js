@@ -29,6 +29,35 @@ const board = (()=> {
     }
 })();
 
+const gameLogic = (()=>{
+    const winningConditions = [
+        // winning coloumsn
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        // winning rows
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        // winning diagnol
+        [0,4,8],
+        [2,4,6]
+    ];
+
+    const hasWon = () => {
+        return winningConditions.some(winningCondition => (
+            (board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[1]]) && (
+             board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[2]]) && (
+             board.getBoard()[winningCondition[0]] === "X" || board.getBoard()[winningCondition[0]] === "O"
+            )
+        ));
+    };
+
+    return {
+        hasWon,
+    }
+})();
+
 const game = (()=>{
     // getting boards
    const _boardGrid = [...document.querySelectorAll('.boardCell')];
@@ -37,7 +66,7 @@ const game = (()=>{
 //    setting up players
    let playerX = player("","X")
    let playerO = player("","O")
-
+ 
    const getPlayerO = ()=> playerO
    const getPlayerX = ()=> playerX
 
@@ -49,13 +78,13 @@ const game = (()=>{
             obj[arrayItem]++
             return obj
         }, {});
-
-        return moveCounter["X"] == moveCounter['O'] ? playerX : playerO
+        return moveCounter["X"] == moveCounter["O"] ? playerX : playerO
     }
 
     _boardGrid.forEach(grid => {
         grid.addEventListener('click',event=>{
             board.makeMove(event.target,getCurrentPlayer())
+            
         })
     })
 
@@ -65,3 +94,4 @@ const game = (()=>{
         getCurrentPlayer,
    }
 })();
+

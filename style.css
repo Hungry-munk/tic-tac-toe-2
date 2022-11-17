@@ -162,6 +162,13 @@ footer {
     grid-area: footer;
     background-color: var(--white);
 }
+/* winner modal */
+div.endModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);    
+}
 
 /* random styling */
 
