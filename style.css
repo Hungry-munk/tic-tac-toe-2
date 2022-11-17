@@ -49,7 +49,7 @@ main {
     align-items: center;
     flex-direction: column;
     gap: 50px;
-    display: none;
+    display: ;
 }
 
 .inputContainer {
@@ -143,8 +143,13 @@ div.board {
     transform: scale(1);
     transition: ease-in-out 0.5s;
     visibility: visible;
+    display: block;
 }
 
+div.board.hiddenBoard {
+    display: none;
+    transform: scale(0);
+}
 div.hidden {
     transform: scale(0);
     transition: ease-in-out 0.5s;

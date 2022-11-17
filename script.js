@@ -32,7 +32,7 @@ const board = (()=> {
 const gameLogic = (()=>{
     const _htmlboard = document.querySelector('.board')
     const _winningConditions = [
-        // winning coloumsn
+        // winning coloumns
         [0,1,2],
         [3,4,5],
         [6,7,8],
@@ -46,7 +46,7 @@ const gameLogic = (()=>{
     ];
 
     const hasWon = () => {
-        let winningCondition = _winningConditions.find(winningCondition => {
+        const winningCondition = _winningConditions.find(winningCondition => {
             if  ((board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[1]]) && (
                 board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[2]]) && (
                 board.getBoard()[winningCondition[0]] === "X" || board.getBoard()[winningCondition[0]] === "O"
@@ -142,6 +142,9 @@ const nonGameFuncionality = (()=>{
     const _modaBlocker = document.querySelector('.endModalBlocker')
     const _board = document.querySelector(".board")
     const _boardGrid = [...document.querySelectorAll('.boardCell')]; 
+    // menu stuff
+    const _startBtn = document.querySelector(".startBtn")
+
 
 
     const displayWinner = (winnerName)=> {
@@ -193,7 +196,24 @@ const nonGameFuncionality = (()=>{
                 },300)
             },300)
         },200);
-    }
+    };
+
+    _startBtn.addEventListener("click",()=>{
+        const inputX = document.querySelector("#nameInput1")
+        const inputO = document.querySelector("#nameInput2")
+
+        if (!inputO.value || !inputX.value || (inputX.value === inputO.value)) {
+            if (!inputO.value) inputO.setCustomValidity("must enter name");
+            if (!inputO.value) inputX.setCustomValidity("must enter name");
+            if (inputO.value && inputX.value && inputO.value === inputX.value) {
+                inputO.setCustomValidity("cant have same name")
+                inputX.setCustomValidity("cant have same name")
+                console.log("works")
+            };
+            return
+        };
+        
+    })
 
 
     _rematchBtn.addEventListener("click",restartGame)
