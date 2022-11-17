@@ -167,9 +167,44 @@ div.endModal {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);    
+    transform: translate(-50%,-50%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(40px,8vh,80px);   
+    z-index: 1;
+
+}
+.endModalBlocker {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--dark-gray);
+    opacity: 0.3;
 }
 
+.modalItem {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 10px 20px ;
+    font-size: 1rem;
+    box-shadow: var(--box-shadow);
+}
+
+.endModal button{
+    padding: 10px 20px ;
+    transition: ease-in 0.2s;
+    border: none;
+}
+
+.endModal button:hover {
+    background-color: var(--light-red);
+    cursor: pointer;
+}
 /* random styling */
 
 input[type='checkbox'] {
