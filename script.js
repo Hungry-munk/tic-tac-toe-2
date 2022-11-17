@@ -12,9 +12,9 @@ const board = (()=> {
 
     const makeMove = (grid,player)=> {
         const gridIndex = parseInt(grid.getAttribute('cellNumber'))
-        if (!grid.innerText && !_board[gridIndex]) {
+        if (!grid.textContent && !_board[gridIndex]) {
             _board[gridIndex] = player.sign
-            grid.innerText = player.sign
+            grid.textContent = player.sign
         }
     }
 
@@ -31,7 +31,6 @@ const board = (()=> {
 
 const gameLogic = (()=>{
     const _htmlboard = document.querySelector('.board')
-    console.log(_htmlboard)
     const _winningConditions = [
         // winning coloumsn
         [0,1,2],
@@ -56,20 +55,36 @@ const gameLogic = (()=>{
         return !!winningCondition ? winningCondition : false
     }
 
+    const _updateWinnerScore = winnerSign => {
+        if (winnerSign ==="X") gamefunctionality.getPlayerX().score++
+        else if(winnerSign === "O") gamefunctionality.getPlayerX().score++
+    }
     
     const boardObserver = new MutationObserver(entries=>{
-        console.log(hasWon())
-    })
+        const winningCombination = hasWon()
+        if (!winningCombination) return
+        const winner = entries[0].target.textContent === "X" ? 
+            gamefunctionality.getPlayerX() : gamefunctionality.getPlayerX();
+        _updateWinnerScore(entries[0].target.textContent)
+        nonGameFuncionality.displayWinner(winner.name)
     
-    boardObserver.observe(_htmlboard, {
-        subtree: true,
-        childList: true,
-    })
+
+
+    });
+
+    const startBoardObserve = ()=>{
+        boardObserver.observe(_htmlboard, {
+            subtree: true,
+            childList: true,
+            characterData:true
+        });
+    };
 
     
     
     return {
         hasWon,
+        startBoardObserve,
 
     }
 })();
@@ -84,6 +99,9 @@ const gamefunctionality = (()=>{
   
     const getPlayerO = ()=> playerO
     const getPlayerX = ()=> playerX 
+
+    // setting up board
+    gameLogic.startBoardObserve()
 
      const getCurrentPlayer = () => {
          const moveCounter = board.getBoard().reduce((obj,arrayItem)=>{
@@ -117,5 +135,33 @@ const gamefunctionality = (()=>{
 })();
 
 const nonGameFuncionality = (()=>{
+    const _endModal = document.querySelector('.endModal')
+    const _winner = document.querySelector('.winner')
+    const _score = document.querySelector('.score')
+    const _rematchBtn = document.querySelector(".rematchBtn")
+    const _modaBlocker = document.querySelector('.endModalBlocker')
 
+    const displayWinner = (winnerName)=> {
+        _endModal.style.visibility = "visible" 
+        _modaBlocker.classList.add("visible")
+
+        _winner.textContent = `${winnerName} wins!`
+        _score.textContent = `${gamefunctionality.getPlayerX().name} : ${gamefunctionality.getPlayerX().score} 
+            VS ${gamefunctionality.getPlayerO().name} : ${gamefunctionality.getPlayerO().score}`
+
+        setTimeout(()=>{
+            _winner.classList.add("visible")
+            setTimeout(()=>{
+                _score.classList.add("visible")
+                setTimeout(()=>{
+                    _rematchBtn.classList.add("visible")
+                },200)
+            },300)
+        },300)
+    }
+
+    return {
+        displayWinner,
+
+    }
 })();

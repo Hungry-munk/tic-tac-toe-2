@@ -186,7 +186,7 @@ div.endModal {
     height: 100vh;
     background-color: var(--dark-gray);
     opacity: 0.3;
-
+    transform: scale(0);
     visibility: hidden;
 }
 
@@ -196,9 +196,15 @@ div.endModal {
     padding: 10px 20px ;
     font-size: 1rem;
     box-shadow: var(--box-shadow);
-
+    transform: scale(0);
     transition: 0.4s ease-in-out;
     visibility: hidden;
+}
+
+div.visible,
+button.visible {
+    transform: scale(1);
+    visibility: visible;
 }
 
 .endModal button{
