@@ -57,7 +57,7 @@ const gameLogic = (()=>{
 
     const _updateWinnerScore = winnerSign => {
         if (winnerSign ==="X") gamefunctionality.getPlayerX().score++
-        else if(winnerSign === "O") gamefunctionality.getPlayerX().score++
+        else if(winnerSign === "O") gamefunctionality.getPlayerO().score++
     }
     
     const boardObserver = new MutationObserver(entries=>{
@@ -65,9 +65,9 @@ const gameLogic = (()=>{
         if (!winningCombination) return
         const winner = entries[0].target.textContent === "X" ? 
             gamefunctionality.getPlayerX() : gamefunctionality.getPlayerX();
-        _updateWinnerScore(entries[0].target.textContent)
-        nonGameFuncionality.displayWinner(winner.name)
-    
+        _updateWinnerScore(entries[0].target.textContent);
+        nonGameFuncionality.displayWinner(winner.name);
+        nonGameFuncionality.displayWinnerCombo(winningCombination)
 
 
     });
@@ -141,6 +141,8 @@ const nonGameFuncionality = (()=>{
     const _rematchBtn = document.querySelector(".rematchBtn")
     const _modaBlocker = document.querySelector('.endModalBlocker')
     const _board = document.querySelector(".board")
+    const _boardGrid = [...document.querySelectorAll('.boardCell')]; 
+
 
     const displayWinner = (winnerName)=> {
         _endModal.style.visibility = "visible" 
@@ -160,6 +162,11 @@ const nonGameFuncionality = (()=>{
             },300)
         },200)
     }
+    const displayWinnerCombo = (winningCombination)=>{
+        winningCombination.forEach(sqaureIndex=>{
+            document.querySelector(`[cellNumber="${sqaureIndex}"]`).classList.add("winningSquare")
+        });
+    };
 
     const restartGame = ()=>{
         setTimeout(()=>{
@@ -171,28 +178,29 @@ const nonGameFuncionality = (()=>{
                     setTimeout(()=>{
                         _endModal.style.visibility = "hidden" 
                         _modaBlocker.classList.remove("modalHidden")
+                        _board.classList.add("hidden")
                         board.cleanBoard()
-                        _board.classList.remove("hidden")
-                        _board.classList.add("visible")
-                        _board.childNodes.forEach(node=>{
-                            node.textContent = ""
-                        })
                         setTimeout(()=>{
+                            _boardGrid.forEach(grid=>{
+                                grid.textContent = undefined
+                                grid.classList.remove("winningSquare")
+                            });
+                            _board.classList.remove("hidden");
 
-                        },200)
+                        },500)
 
                     },300)
                 },300)
             },300)
         },200);
-
-
     }
+
 
     _rematchBtn.addEventListener("click",restartGame)
 
     return {
         displayWinner,
+        displayWinnerCombo,
 
     }
 })();

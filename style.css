@@ -140,12 +140,15 @@ div.board {
     display: grid;
     grid-template: repeat(3,minmax(80px,100px)) / repeat(3,minmax(80px,100px));
     gap: 10px;
-    transform: ease-in-out 0.4s;
+    transform: scale(1);
+    transition: ease-in-out 0.5s;
+    visibility: visible;
 }
 
 div.hidden {
     transform: scale(0);
-    transform: ease-in-out 0.4s;
+    transition: ease-in-out 0.5s;
+    visibility: hidden;
 }
 
 div.board div.boardCell {
@@ -156,6 +159,13 @@ div.board div.boardCell {
     display: flex;
     justify-content: center;
     align-items: center;
+
+}
+
+div.board div.boardCell.winningSquare {
+    background-color: var(--light-green);
+    transition: 0.8s ease-in-out;
+
 }
 div.board div.boardCell:hover {
     transform: scale(1.05);
@@ -190,12 +200,14 @@ div.endModal {
     width: 100vw;
     height: 100vh;
     visibility: hidden;
+    transition: 1s ease-in-out;
+
 }
 .endModalBlocker.modalHidden {
     background-color: var(--dark-gray);
     opacity: 0.3;
     visibility: visible;
-    transition: 0.8s ease-in-out;
+    transition: 1s ease-in-out;
 }
 
 .modalItem {
