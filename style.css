@@ -41,6 +41,7 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .menu {
@@ -49,7 +50,6 @@ main {
     align-items: center;
     flex-direction: column;
     gap: 50px;
-    display: ;
 }
 
 .inputContainer {
@@ -148,17 +148,18 @@ button.startBtn:active {
 /* board styling */
 
 div.board {
-    display: grid;
+    /* display: grid; */
     grid-template: repeat(3,minmax(80px,100px)) / repeat(3,minmax(80px,100px));
     gap: 10px;
     transform: scale(1);
     transition: ease-in-out 0.5s;
     visibility: visible;
-    display: block;
+    display: none;
 }
 
 div.board.hiddenBoard {
-    display: none;
+    visibility: hidden;
+    transition: ease-in-out 0.5s;
     transform: scale(0);
 }
 div.hidden {
@@ -254,6 +255,21 @@ button.visible {
     cursor: pointer;
 }
 /* random styling */
+
+.fa-arrow-left {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    transform: scale(2);
+    visibility: hidden;
+    box-shadow: var();
+}
+
+.fa-arrow-left:hover {
+    transform: scale(2.2);
+    cursor: pointer;
+    
+}
 
 input[type='checkbox'] {
     cursor: pointer;

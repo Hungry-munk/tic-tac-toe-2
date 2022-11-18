@@ -142,10 +142,14 @@ const nonGameFuncionality = (()=>{
     const _modaBlocker = document.querySelector('.endModalBlocker')
     const _board = document.querySelector(".board")
     const _boardGrid = [...document.querySelectorAll('.boardCell')]; 
+    const _menu = document.querySelector('.menu')
     // menu stuff
     const _startBtn = document.querySelector(".startBtn")
     const _errorMessageO= document.querySelector(".errormessageO")
     const _errorMessageX= document.querySelector(".errormessageX")
+    const _backButton = document.querySelector(".fa-arrow-left")
+
+
 
 
 
@@ -191,9 +195,7 @@ const nonGameFuncionality = (()=>{
                                 grid.classList.remove("winningSquare")
                             });
                             _board.classList.remove("hidden");
-
                         },500)
-
                     },300)
                 },300)
             },300)
@@ -209,13 +211,13 @@ const nonGameFuncionality = (()=>{
                 _errorMessageO.textContent = "must enter a name"
                 setTimeout(()=>{
                     _errorMessageO.textContent = undefined
-                },3000)
+                },2000)
             } ;
             if (!inputX.value) {
                 _errorMessageX.textContent = "must enter a name"
                 setTimeout(()=>{
                     _errorMessageX.textContent = undefined
-                },3000)
+                },2000)
             }
             if (inputO.value && inputX.value && inputO.value === inputX.value) {
                 _errorMessageX.textContent = "cant have the same name"
@@ -223,11 +225,21 @@ const nonGameFuncionality = (()=>{
                 setTimeout(()=>{
                     _errorMessageX.textContent = undefined
                     _errorMessageO.textContent = undefined
-                },3000)
+                },2000)
             };
             return
         };
         
+        _menu.classList.add("hidden")
+        setTimeout(()=>{
+            _menu.style.display = "none"
+            _board.style.display = "grid"
+            _backButton.style.visibility = "visible"
+            setTimeout(()=>{
+                // cant be executed at the same time as chaning the display of the board
+                _board.classList.remove("hiddenBoard")
+            },1)
+        },900)
     })
 
 
