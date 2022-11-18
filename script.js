@@ -144,6 +144,8 @@ const nonGameFuncionality = (()=>{
     const _boardGrid = [...document.querySelectorAll('.boardCell')]; 
     // menu stuff
     const _startBtn = document.querySelector(".startBtn")
+    const _errorMessageO= document.querySelector(".errormessageO")
+    const _errorMessageX= document.querySelector(".errormessageX")
 
 
 
@@ -203,12 +205,25 @@ const nonGameFuncionality = (()=>{
         const inputO = document.querySelector("#nameInput2")
 
         if (!inputO.value || !inputX.value || (inputX.value === inputO.value)) {
-            if (!inputO.value) inputO.setCustomValidity("must enter name");
-            if (!inputO.value) inputX.setCustomValidity("must enter name");
+            if (!inputO.value){
+                _errorMessageO.textContent = "must enter a name"
+                setTimeout(()=>{
+                    _errorMessageO.textContent = undefined
+                },3000)
+            } ;
+            if (!inputX.value) {
+                _errorMessageX.textContent = "must enter a name"
+                setTimeout(()=>{
+                    _errorMessageX.textContent = undefined
+                },3000)
+            }
             if (inputO.value && inputX.value && inputO.value === inputX.value) {
-                inputO.setCustomValidity("cant have same name")
-                inputX.setCustomValidity("cant have same name")
-                console.log("works")
+                _errorMessageX.textContent = "cant have the same name"
+                _errorMessageO.textContent = "cant have the same name"
+                setTimeout(()=>{
+                    _errorMessageX.textContent = undefined
+                    _errorMessageO.textContent = undefined
+                },3000)
             };
             return
         };
