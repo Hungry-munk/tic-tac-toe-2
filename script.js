@@ -105,6 +105,15 @@ const gamefunctionality = (()=>{
         playerX.name = Xname
         playerX,isAi = XAi
     }
+    const resetPlayers = ()=>{
+        playerO.isAi = false
+        playerO.name = undefined
+        playerO.score = 0
+
+        playerX.isAi = false
+        playerX.name = undefined
+        playerX.score = 0
+    }
 
     // setting up board
     gameLogic.startBoardObserve()
@@ -138,6 +147,7 @@ const gamefunctionality = (()=>{
          getPlayerX,
          getCurrentPlayer,
          updatePlayers,
+         resetPlayers,
 
  }
 })();
@@ -156,9 +166,6 @@ const nonGameFuncionality = (()=>{
     const _errorMessageO= document.querySelector(".errormessageO")
     const _errorMessageX= document.querySelector(".errormessageX")
     const _backButton = document.querySelector(".fa-arrow-left")
-
-
-
 
 
     const displayWinner = (winnerName)=> {
@@ -255,16 +262,37 @@ const nonGameFuncionality = (()=>{
             setTimeout(()=>{
                 // cant be executed at the same time as chaning the display of the board
                 _board.classList.remove("hiddenBoard")
+                __inputX.value = ""
+                __inputO.value = ""
+                __playerXAi.checked = false
+                __playerOAi.checked = false
             },1)
         },900)
     })
 
-
     _rematchBtn.addEventListener("click",restartGame)
+    _backButton.addEventListener("click",()=>{
+        _board.classList.add("hiddenBoard")
+        board.cleanBoard()
+        setTimeout(()=>{
+            _menu.style.display="flex"
+            _board.style.display="none"
+            _backButton.style.visibility = "hidden"
+            gamefunctionality.resetPlayers()
+
+            _boardGrid.forEach(grid=>{
+                grid.textContent = undefined
+                grid.classList.remove("winningSquare")
+            });
+            setTimeout(() => {
+                _menu.classList.remove("hidden")
+            }, 1);
+        },800)
+    })
 
     return {
         displayWinner,
         displayWinnerCombo,
-
+        
     }
 })();

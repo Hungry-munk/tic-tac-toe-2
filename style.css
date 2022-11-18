@@ -50,6 +50,8 @@ main {
     align-items: center;
     flex-direction: column;
     gap: 50px;
+    transform: scale(1);
+    transition: ease-in-out 0.5s;
 }
 
 .inputContainer {
