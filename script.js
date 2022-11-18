@@ -99,6 +99,12 @@ const gamefunctionality = (()=>{
   
     const getPlayerO = ()=> playerO
     const getPlayerX = ()=> playerX 
+    const updatePlayers = (Xname,XAi,Oname,OAi)=> {
+        playerO.name = Oname
+        playerO.isAi = OAi
+        playerX.name = Xname
+        playerX,isAi = XAi
+    }
 
     // setting up board
     gameLogic.startBoardObserve()
@@ -131,6 +137,8 @@ const gamefunctionality = (()=>{
          getPlayerO,
          getPlayerX,
          getCurrentPlayer,
+         updatePlayers,
+
  }
 })();
 
@@ -203,23 +211,25 @@ const nonGameFuncionality = (()=>{
     };
 
     _startBtn.addEventListener("click",()=>{
-        const inputX = document.querySelector("#nameInput1")
-        const inputO = document.querySelector("#nameInput2")
+        const __inputX = document.querySelector("#nameInput1")
+        const __inputO = document.querySelector("#nameInput2")
+        const __playerOAi = document.querySelector("#OAi")
+        const __playerXAi = document.querySelector("#XAi")
 
-        if (!inputO.value || !inputX.value || (inputX.value === inputO.value)) {
-            if (!inputO.value){
+        if (!__inputO.value || !__inputX.value || (__inputX.value === __inputO.value)) {
+            if (!__inputO.value){
                 _errorMessageO.textContent = "must enter a name"
                 setTimeout(()=>{
                     _errorMessageO.textContent = undefined
                 },2000)
             } ;
-            if (!inputX.value) {
+            if (!__inputX.value) {
                 _errorMessageX.textContent = "must enter a name"
                 setTimeout(()=>{
                     _errorMessageX.textContent = undefined
                 },2000)
             }
-            if (inputO.value && inputX.value && inputO.value === inputX.value) {
+            if (__inputO.value && __inputX.value && __inputO.value === __inputX.value) {
                 _errorMessageX.textContent = "cant have the same name"
                 _errorMessageO.textContent = "cant have the same name"
                 setTimeout(()=>{
@@ -229,7 +239,14 @@ const nonGameFuncionality = (()=>{
             };
             return
         };
-        
+
+        gamefunctionality.updatePlayers(
+            __inputX.value,
+            __playerXAi.checked,
+            __inputO.value,
+            __playerOAi.checked,
+        );
+
         _menu.classList.add("hidden")
         setTimeout(()=>{
             _menu.style.display = "none"
