@@ -62,9 +62,11 @@ const gameLogic = (()=>{
     
     const boardObserver = new MutationObserver(entries=>{
         const winningCombination = hasWon()
+        if (!winningCombination && !board.getBoard().includes(null)
+            )nonGameFuncionality.displayWinner("no one");
         if (!winningCombination) return
         const winner = entries[0].target.textContent === "X" ? 
-            gamefunctionality.getPlayerX() : gamefunctionality.getPlayerX();
+            gamefunctionality.getPlayerX() : gamefunctionality.getPlayerO();
         _updateWinnerScore(entries[0].target.textContent);
         nonGameFuncionality.displayWinner(winner.name);
         nonGameFuncionality.displayWinnerCombo(winningCombination)
@@ -80,7 +82,13 @@ const gameLogic = (()=>{
         });
     };
 
-    
+    // AI stuff
+    const isMovesLeft = (gameBoard)=> {
+        for (let i = 0; i<9; i++) {
+            if (gameBoard[i]) return true
+        }
+        return false
+    }
     
     return {
         hasWon,
