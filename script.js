@@ -45,14 +45,16 @@ const gameLogic = (()=>{
         [2,4,6]
     ];
 
-    const hasWon = () => {
+    const hasWon = (theBoard) => {
+        const currentPlayer = gamefunctionality.getPreviousPlayer(board.getBoard())
+
         const winningCondition = _winningConditions.find(winningCondition => {
-            if  ((board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[1]]) && (
-                board.getBoard()[winningCondition[0]] === board.getBoard()[winningCondition[2]]) && (
-                board.getBoard()[winningCondition[0]] === "X" || board.getBoard()[winningCondition[0]] === "O"
+            if  ((theBoard[winningCondition[0]] === theBoard[winningCondition[1]]) && (
+                theBoard[winningCondition[0]] === theBoard[winningCondition[2]]) && (
+                theBoard[winningCondition[0]] === "X" || theBoard[winningCondition[0]] === "O"
             )) return true
         })
-        return !!winningCondition ? winningCondition : false
+        return !!winningCondition ? [winningCondition,currentPlayer] : [false]
     }
 
     const _updateWinnerScore = winnerSign => {
@@ -61,7 +63,7 @@ const gameLogic = (()=>{
     }
     
     const boardObserver = new MutationObserver(entries=>{
-        const winningCombination = hasWon()
+        const winningCombination = hasWon(board.getBoard())[0]
         if (!winningCombination && !board.getBoard().includes(null)
             )nonGameFuncionality.displayWinner("no one");
         if (!winningCombination) return
@@ -83,17 +85,69 @@ const gameLogic = (()=>{
     };
 
     // AI stuff
-    const isMovesLeft = (gameBoard)=> {
+    const isMovesLeft = (theBoard)=> {
         for (let i = 0; i<9; i++) {
-            if (gameBoard[i]) return true
+            if (theBoard[i]) return true
         }
         return false
     }
+
+    const evaluate = (theBoard, currentPlayer)=> {
+        if (!!hasWon(theBoard)[0]) {
+            const winningPlayer = document.querySelector(`[cellNumber = "${hasWon(theBoard)[0][0]}"]`).textContent
+            if (currentPlayer === winningPlayer) 
+                return 10
+            return -10
+        }
+        return 0
+    }
+
+    const miniMax = (theBoard, depth, isMax, currentPlayer) => {
+        const score = evaluate(currentPlayer)
+
+        if (score == 10) 
+            return score;
+            
+        if (score == -10)
+            return score;
+
+        if (!isMovesLeft(theBoard))
+            return 0;
+
+        if (isMax) {
+            let best = -1000
+
+            for (let i = 0; i < 9; i++) {
+                if(theBoard[i] == null) {
+                    theBoard[i] = currentPlayer;
+                    best = Math.max(best,miniMax(theBoard,depth++, !isMax, currentPlayer))
+                    theBoard[i] = null
+
+                }
+            };
+            return best
+        } else {
+            let best = 1000
+
+            for (let i = 0; i < 9; i++) {
+                if(theBoard[i] == null) {
+                    theBoard[i] = currentPlayer;
+                    best = Math.min(best,miniMax(theBoard,depth++, !isMax, currentPlayer))
+                    theBoard[i] = null
+
+                }
+            };
+            return best
+        };
+    };
+
+    
+
     
     return {
         hasWon,
         startBoardObserve,
-
+        evaluate,
     }
 })();
 
@@ -111,7 +165,7 @@ const gamefunctionality = (()=>{
         playerO.name = Oname
         playerO.isAi = OAi
         playerX.name = Xname
-        playerX,isAi = XAi
+        playerX.isAi = XAi
     }
     const resetPlayers = ()=>{
         playerO.isAi = false
@@ -126,8 +180,8 @@ const gamefunctionality = (()=>{
     // setting up board
     gameLogic.startBoardObserve()
 
-     const getCurrentPlayer = () => {
-         const moveCounter = board.getBoard().reduce((obj,arrayItem)=>{
+     const getCurrentPlayer = (theBoard) => {
+         const moveCounter = theBoard.reduce((obj,arrayItem)=>{
              if (!obj[arrayItem]) {
                  obj[arrayItem] = 0
              }
@@ -137,9 +191,21 @@ const gamefunctionality = (()=>{
          return moveCounter["X"] == moveCounter["O"] ? playerX : playerO
      } 
 
+     const getPreviousPlayer = (theBoard)=>{
+        const moveCounter = theBoard.reduce((obj,arrayItem)=>{
+            if (!obj[arrayItem]) {
+                obj[arrayItem] = 0
+            }
+            obj[arrayItem]++
+            return obj
+        }, {});
+
+        return moveCounter["X"] == moveCounter["O"] ? playerO : playerX
+     }
+
      _boardGrid.forEach(grid => {
          grid.addEventListener('click',event=>{
-             board.makeMove(event.target,getCurrentPlayer())  
+             board.makeMove(event.target,getCurrentPlayer(board.getBoard()))  
          })
      }) 
 
@@ -154,6 +220,7 @@ const gamefunctionality = (()=>{
          getPlayerO,
          getPlayerX,
          getCurrentPlayer,
+         getPreviousPlayer,
          updatePlayers,
          resetPlayers,
 
