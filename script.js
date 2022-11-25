@@ -87,13 +87,12 @@ const gameLogic = (()=>{
         const winningCombination = hasWon(board.getBoard())[0]
         const currentPlayer = gamefunctionality.getCurrentPlayer(board.getBoard())
 
-        if (!winningCombination && play) AIMakeMove(currentPlayer)
+        if (!winningCombination && play && currentPlayer.isAi) AIMakeMove(currentPlayer)
         if (!winningCombination && !board.getBoard().includes(null)) {
             nonGameFuncionality.displayWinner("no one");
             changePlayState()
         }
-        if (!winningCombination) return
-
+        if (!winningCombination) return;
 
         const winner = entries[0].target.textContent === "X" ? 
             gamefunctionality.getPlayerX() : gamefunctionality.getPlayerO();
@@ -131,52 +130,46 @@ const gameLogic = (()=>{
         return 0
     }
 
-    const miniMax = (theBoard, depth, isMax, currentPlayer) => {
-        const score = evaluate(theBoard ,currentPlayer)
+    const miniMax = (theBoard, depth, isMax) => {
+        const score = evaluate(theBoard ,"X")
 
-        if (score == 10) 
-            return score;
-            
-        if (score == -10)
-            return score;
-
-        if (!isMovesLeft(theBoard))
-            return 0;
+        if (score == 10 || score == -10) return score
+        if (!isMovesLeft(theBoard)) return 0;
 
         if (isMax) {
-            let best = -Infinity
+            let bestScore = -Infinity
 
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
-                    theBoard[i] = currentPlayer;
-                    best = Math.max(best,miniMax(theBoard,depth++, !isMax,currentPlayer))
+                    theBoard[i] = "O";
+                    bestScore = Math.max(bestScore,miniMax(theBoard,depth++, !isMax))
                     theBoard[i] = null
                 }
             };
-            return best
+            return bestScore
         } 
         else {
-            let best = Infinity
-            let oppositionPlayer = currentPlayer == "X" ?"X" : "O"
+            let bestScore = Infinity
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
-                    theBoard[i] = oppositionPlayer;
-                    best = Math.min(best,miniMax(theBoard,depth++, !isMax,currentPlayer))
+                    theBoard[i] = "X";
+                    bestScore = Math.min(bestScore,miniMax(theBoard,depth++, !isMax))
                     theBoard[i] = null
                 };
             };
-            return best
+            return bestScore
         };
+
     };
 
-    const findBestMove = (theBoard,currentPlayer)=>{
+    const findBestMove = (theBoard)=>{
         let bestVal = -Infinity
         let bestMove;
 
         for (let i = 0; i < 9; i++) {
             if(theBoard[i] == null) {
-                theBoard[i] = currentPlayer;
-                let moveVal = miniMax(theBoard,0, false,currentPlayer)
+                theBoard[i] = "O";
+                let moveVal = miniMax(theBoard,0, true)
                 theBoard[i] = null
                 
                 if (moveVal > bestVal) {
