@@ -157,7 +157,7 @@ const gameLogic = (()=>{
         } 
         else {
             let best = Infinity
-            let oppositionPlayer = currentPlayer == "X" ?"X" : "O"
+            let oppositionPlayer = currentPlayer == "X" ? "X" : "O"
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
                     theBoard[i] = oppositionPlayer;
