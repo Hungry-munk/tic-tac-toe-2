@@ -50,6 +50,10 @@ const gameLogic = (()=>{
         play = !play
     }
 
+    const playStatus = ()=> {
+        return play
+    }
+
     const hasWon = (theBoard) => {
         const currentPlayer = gamefunctionality.getPreviousPlayer(board.getBoard())
 
@@ -66,16 +70,30 @@ const gameLogic = (()=>{
         if (winnerSign ==="X") gamefunctionality.getPlayerX().score++
         else if(winnerSign === "O") gamefunctionality.getPlayerO().score++
     }
+
+    const AIMakeMove = (currentPlayer) =>{
+        _htmlboard.style.pointerEvents = "none"
+        setTimeout(()=>{
+            if (play) if (currentPlayer.isAi && board.getBoard().includes(null)) {
+                board.makeMove(document.querySelector(`[cellNumber = "${
+                    findBestMove(board.getBoard() , currentPlayer.sign)}"]`), currentPlayer)
+            };
+        _htmlboard.style.pointerEvents = "auto"
+        },400)
+    }
     
     const boardObserver = new MutationObserver(entries=>{
-        if (play) console.log("fired")
 
         const winningCombination = hasWon(board.getBoard())[0]
+        const currentPlayer = gamefunctionality.getCurrentPlayer(board.getBoard())
+
+        if (!winningCombination) AIMakeMove(currentPlayer)
         if (!winningCombination && !board.getBoard().includes(null)) {
             nonGameFuncionality.displayWinner("no one");
             changePlayState()
         }
         if (!winningCombination) return
+
 
         const winner = entries[0].target.textContent === "X" ? 
             gamefunctionality.getPlayerX() : gamefunctionality.getPlayerO();
@@ -139,10 +157,10 @@ const gameLogic = (()=>{
         } 
         else {
             let best = Infinity
-
+            let oppositionPlayer = currentPlayer == "X" ?"X" : "O"
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
-                    theBoard[i] = currentPlayer;
+                    theBoard[i] = oppositionPlayer;
                     best = Math.min(best,miniMax(theBoard,depth++, !isMax,currentPlayer))
                     theBoard[i] = null
                 };
@@ -170,14 +188,11 @@ const gameLogic = (()=>{
         return bestMove
     }
 
-    
     return {
         hasWon,
         startBoardObserve,
-        evaluate,
-        findBestMove,
-        isMovesLeft,
         changePlayState,
+        AIMakeMove,
 
     }
 })();
@@ -319,6 +334,8 @@ const nonGameFuncionality = (()=>{
                             _board.classList.remove("hidden");
                             setTimeout(()=>{
                                 gameLogic.changePlayState()
+                                if (gamefunctionality.getPlayerX().isAi) 
+                                    gameLogic.AIMakeMove(gamefunctionality.getPlayerX());
                             },1)
                         },500)
                     },300)
@@ -378,12 +395,15 @@ const nonGameFuncionality = (()=>{
                 __inputO.value = ""
                 __playerXAi.checked = false
                 __playerOAi.checked = false
+                if (gamefunctionality.getPlayerX().isAi) 
+                    gameLogic.AIMakeMove(gamefunctionality.getPlayerX());
             },1)
         },900)
     })
 
     _rematchBtn.addEventListener("click",restartGame)
     _backButton.addEventListener("click",()=>{
+        gameLogic.changePlayState()
         _board.classList.add("hiddenBoard")
         board.cleanBoard()
         setTimeout(()=>{
