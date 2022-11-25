@@ -44,6 +44,11 @@ const gameLogic = (()=>{
         [0,4,8],
         [2,4,6]
     ];
+    let play = false;
+
+    const changePlayState = ()=>{
+        play = !play
+    }
 
     const hasWon = (theBoard) => {
         const currentPlayer = gamefunctionality.getPreviousPlayer(board.getBoard())
@@ -63,15 +68,21 @@ const gameLogic = (()=>{
     }
     
     const boardObserver = new MutationObserver(entries=>{
+        if (play) console.log("fired")
+
         const winningCombination = hasWon(board.getBoard())[0]
-        if (!winningCombination && !board.getBoard().includes(null)
-            )nonGameFuncionality.displayWinner("no one");
+        if (!winningCombination && !board.getBoard().includes(null)) {
+            nonGameFuncionality.displayWinner("no one");
+            changePlayState()
+        }
         if (!winningCombination) return
+
         const winner = entries[0].target.textContent === "X" ? 
             gamefunctionality.getPlayerX() : gamefunctionality.getPlayerO();
         _updateWinnerScore(entries[0].target.textContent);
         nonGameFuncionality.displayWinner(winner.name);
         nonGameFuncionality.displayWinnerCombo(winningCombination)
+
 
 
     });
@@ -122,11 +133,11 @@ const gameLogic = (()=>{
                     theBoard[i] = currentPlayer;
                     best = Math.max(best,miniMax(theBoard,depth++, !isMax,currentPlayer))
                     theBoard[i] = null
-
                 }
             };
             return best
-        } else {
+        } 
+        else {
             let best = Infinity
 
             for (let i = 0; i < 9; i++) {
@@ -134,8 +145,7 @@ const gameLogic = (()=>{
                     theBoard[i] = currentPlayer;
                     best = Math.min(best,miniMax(theBoard,depth++, !isMax,currentPlayer))
                     theBoard[i] = null
-
-                }
+                };
             };
             return best
         };
@@ -166,6 +176,9 @@ const gameLogic = (()=>{
         startBoardObserve,
         evaluate,
         findBestMove,
+        isMovesLeft,
+        changePlayState,
+
     }
 })();
 
@@ -286,6 +299,7 @@ const nonGameFuncionality = (()=>{
     };
 
     const restartGame = ()=>{
+        gameLogic.changePlayState()
         setTimeout(()=>{
             _rematchBtn.classList.remove("visible")
             setTimeout(()=>{
@@ -303,6 +317,9 @@ const nonGameFuncionality = (()=>{
                                 grid.classList.remove("winningSquare")
                             });
                             _board.classList.remove("hidden");
+                            setTimeout(()=>{
+                                gameLogic.changePlayState()
+                            },1)
                         },500)
                     },300)
                 },300)
@@ -339,6 +356,8 @@ const nonGameFuncionality = (()=>{
             };
             return
         };
+
+        gameLogic.changePlayState()
 
         gamefunctionality.updatePlayers(
             __inputX.value,
