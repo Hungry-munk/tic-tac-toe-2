@@ -87,7 +87,7 @@ const gameLogic = (()=>{
         const winningCombination = hasWon(board.getBoard())[0]
         const currentPlayer = gamefunctionality.getCurrentPlayer(board.getBoard())
 
-        if (!winningCombination) AIMakeMove(currentPlayer)
+        if (!winningCombination && play) AIMakeMove(currentPlayer)
         if (!winningCombination && !board.getBoard().includes(null)) {
             nonGameFuncionality.displayWinner("no one");
             changePlayState()
