@@ -87,7 +87,7 @@ const gameLogic = (()=>{
     // AI stuff
     const isMovesLeft = (theBoard)=> {
         for (let i = 0; i<9; i++) {
-            if (theBoard[i]) return true
+            if (theBoard[i] == null) return true
         }
         return false
     }
@@ -103,7 +103,7 @@ const gameLogic = (()=>{
     }
 
     const miniMax = (theBoard, depth, isMax, currentPlayer) => {
-        const score = evaluate(currentPlayer)
+        const score = evaluate(theBoard ,currentPlayer)
 
         if (score == 10) 
             return score;
@@ -115,24 +115,24 @@ const gameLogic = (()=>{
             return 0;
 
         if (isMax) {
-            let best = -1000
+            let best = -Infinity
 
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
                     theBoard[i] = currentPlayer;
-                    best = Math.max(best,miniMax(theBoard,depth++, !isMax, currentPlayer))
+                    best = Math.max(best,miniMax(theBoard,depth++, !isMax,currentPlayer))
                     theBoard[i] = null
 
                 }
             };
             return best
         } else {
-            let best = 1000
+            let best = Infinity
 
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
                     theBoard[i] = currentPlayer;
-                    best = Math.min(best,miniMax(theBoard,depth++, !isMax, currentPlayer))
+                    best = Math.min(best,miniMax(theBoard,depth++, !isMax,currentPlayer))
                     theBoard[i] = null
 
                 }
@@ -141,13 +141,31 @@ const gameLogic = (()=>{
         };
     };
 
-    
+    const findBestMove = (theBoard,currentPlayer)=>{
+        let bestVal = -Infinity
+        let bestMove;
+
+        for (let i = 0; i < 9; i++) {
+            if(theBoard[i] == null) {
+                theBoard[i] = currentPlayer;
+                let moveVal = miniMax(theBoard,0, false,currentPlayer)
+                theBoard[i] = null
+                
+                if (moveVal > bestVal) {
+                    bestVal = moveVal
+                    bestMove = i
+                }
+            }
+        };
+        return bestMove
+    }
 
     
     return {
         hasWon,
         startBoardObserve,
         evaluate,
+        findBestMove,
     }
 })();
 
