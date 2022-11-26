@@ -85,7 +85,6 @@ const gameLogic = (()=>{
 
         const winningCombination = hasWon(board.getBoard())[0]
         const currentPlayer = gamefunctionality.getCurrentPlayer(board.getBoard())
-        console.log(play)
         if (!winningCombination && play && currentPlayer.isAi) AIMakeMove(currentPlayer)
         if (!winningCombination && !board.getBoard().includes(null)) {
             nonGameFuncionality.displayWinner("no one");
@@ -122,11 +121,10 @@ const gameLogic = (()=>{
         return 0
     }
 
-    const miniMax = (theBoard, depth, isMax, currentPlayer) => {
+    const miniMax = (theBoard, depth, isMax, alpha, beta, currentPlayer) => {
         const score = evaluate(theBoard ,currentPlayer)
-        console.log(depth)
-        if (score == 100 ) return score - depth
-        if (score == -100 ) return score + depth
+        if (score == 100 ) return score + depth
+        if (score == -100 ) return score - depth
         if (!isMovesLeft(theBoard)) return 0;
 
         if (isMax) {
@@ -135,20 +133,23 @@ const gameLogic = (()=>{
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
                     theBoard[i] = currentPlayer;
-                    bestScore = Math.max(bestScore,miniMax(theBoard,depth++, !isMax , currentPlayer))
-                    theBoard[i] = null
+                    bestScore = Math.max(bestScore,miniMax(theBoard,depth-1, !isMax ,alpha, beta, currentPlayer))
+                    theBoard[i] = null;
+                    // alpha = Math.max(alpha, bestScore);
+                    // if (beta <= alpha) break;
                 }
             };
             return bestScore
-        } 
-        else {
+        } else {
             let bestScore = Infinity
             let opponent = currentPlayer == "X"?"O":"X"
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
                     theBoard[i] = opponent;
-                    bestScore = Math.min(bestScore,miniMax(theBoard,depth++, !isMax , currentPlayer))
-                    theBoard[i] = null
+                    bestScore = Math.min(bestScore,miniMax(theBoard,depth-1, !isMax ,alpha, beta, currentPlayer));
+                    theBoard[i] = null;
+                    // beta = Math.min(beta,bestScore);
+                    // if (beta <= alpha) break;
                 };
             };
             return bestScore
@@ -159,11 +160,11 @@ const gameLogic = (()=>{
     const findBestMove = (theBoard,currentPlayer)=>{
         let bestVal = -Infinity
         let bestMove;
-        console.log("fired")
+        console.log(currentPlayer)
         for (let i = 0; i < 9; i++) {
             if(theBoard[i] == null) {
                 theBoard[i] = currentPlayer;
-                let moveVal = miniMax(theBoard,0, false,currentPlayer)
+                let moveVal = miniMax(theBoard,0, false,Infinity,-Infinity,currentPlayer)
                 theBoard[i] = null
                 
                 if (moveVal > bestVal) {
