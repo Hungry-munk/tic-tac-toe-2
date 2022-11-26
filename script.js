@@ -113,8 +113,7 @@ const gameLogic = (()=>{
 
     const evaluate = (theBoard, currentPlayer)=> {
         if (!!hasWon(theBoard)[0]) {
-            const winningPlayer = document.querySelector(`[cellNumber = "${hasWon(theBoard)[0][0]}"]`).textContent
-            if (currentPlayer === winningPlayer) 
+            if (currentPlayer === hasWon(theBoard)[1].sign) 
                 return 100
             return -100
         }
