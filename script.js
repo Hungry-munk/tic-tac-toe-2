@@ -1,3 +1,4 @@
+(function(){ //placing all code in a function 
 let player = (name, sign,isAi=false,score=0)=> ({
     name,
     sign,
@@ -256,7 +257,6 @@ const gamefunctionality = (()=>{
          getPreviousPlayer,
          updatePlayers,
          resetPlayers,
-
  }
 })();
 
@@ -274,7 +274,6 @@ const nonGameFuncionality = (()=>{
     const _errorMessageO= document.querySelector(".errormessageO")
     const _errorMessageX= document.querySelector(".errormessageX")
     const _backButton = document.querySelector(".fa-arrow-left")
-
 
     const displayWinner = (winnerName)=> {
         _endModal.style.visibility = "visible" 
@@ -408,7 +407,7 @@ const nonGameFuncionality = (()=>{
 
     return {
         displayWinner,
-        displayWinnerCombo,
-        
+        displayWinnerCombo,  
     }
 })();
+}());
