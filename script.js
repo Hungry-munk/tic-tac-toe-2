@@ -131,24 +131,30 @@ const gameLogic = (()=>{
 
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
+                    // testing this move
                     theBoard[i] = currentPlayer;
-                    bestScore = Math.max(bestScore,miniMax(theBoard,depth-1, !isMax ,alpha, beta, currentPlayer))
+                    const score = miniMax(theBoard, depth-1, !isMax ,alpha, beta, currentPlayer)
+                    bestScore = Math.max(bestScore,score)
                     theBoard[i] = null;
-                    // alpha = Math.max(alpha, bestScore);
-                    // if (beta <= alpha) break;
+                    // alpha beta prunning
+                    alpha = Math.max(alpha, score);
+                    if (beta <= alpha) break;
                 }
             };
             return bestScore
         } else {
             let bestScore = Infinity
-            let opponent = currentPlayer == "X"?"O":"X"
+            let opponent = currentPlayer === "X"?"O":"X"
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
+                    // testing this move
                     theBoard[i] = opponent;
-                    bestScore = Math.min(bestScore,miniMax(theBoard,depth-1, !isMax ,alpha, beta, currentPlayer));
+                    let score = miniMax(theBoard, depth-1, !isMax ,alpha, beta, currentPlayer)
+                    bestScore = Math.min(bestScore,score);
                     theBoard[i] = null;
-                    // beta = Math.min(beta,bestScore);
-                    // if (beta <= alpha) break;
+                    // alpha beta prunning
+                    beta = Math.min(beta,score);
+                    if (beta <= alpha) break;
                 };
             };
             return bestScore
@@ -162,7 +168,7 @@ const gameLogic = (()=>{
         for (let i = 0; i < 9; i++) {
             if(theBoard[i] == null) {
                 theBoard[i] = currentPlayer;
-                let moveVal = miniMax(theBoard,0, false,Infinity,-Infinity,currentPlayer)
+                let moveVal = miniMax(theBoard,0, false,-Infinity ,Infinity,currentPlayer)
                 theBoard[i] = null
                 
                 if (moveVal > bestVal) {
