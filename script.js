@@ -54,7 +54,7 @@ const gameLogic = (()=>{
     }
 
     const hasWon = (theBoard) => {
-        const currentPlayer = gamefunctionality.getPreviousPlayer(board.getBoard())
+        const currentPlayer = gamefunctionality.getPreviousPlayer(theBoard)
 
         const winningCondition = _winningConditions.find(winningCondition => {
             if  ((theBoard[winningCondition[0]] === theBoard[winningCondition[1]]) && (
@@ -116,16 +116,17 @@ const gameLogic = (()=>{
         if (!!hasWon(theBoard)[0]) {
             const winningPlayer = document.querySelector(`[cellNumber = "${hasWon(theBoard)[0][0]}"]`).textContent
             if (currentPlayer === winningPlayer) 
-                return 10
-            return -10
+                return 100
+            return -100
         }
         return 0
     }
 
     const miniMax = (theBoard, depth, isMax, currentPlayer) => {
         const score = evaluate(theBoard ,currentPlayer)
-
-        if (score == 10 || score == -10) return score
+        console.log(depth)
+        if (score == 100 ) return score - depth
+        if (score == -100 ) return score + depth
         if (!isMovesLeft(theBoard)) return 0;
 
         if (isMax) {
