@@ -98,7 +98,8 @@ const gameLogic = (()=>{
             gamefunctionality.getPlayerX() : gamefunctionality.getPlayerO();
         _updateWinnerScore(entries[0].target.textContent);
         nonGameFuncionality.displayWinner(winner.name);
-        nonGameFuncionality.displayWinnerCombo(winningCombination)
+        nonGameFuncionality.displayWinnerCombo(winningCombination);
+        changePlayState()
     });
 
     const startBoardObserve = ()=>{
@@ -238,13 +239,7 @@ const gamefunctionality = (()=>{
          grid.addEventListener('click',event=>{
              board.makeMove(event.target,getCurrentPlayer(board.getBoard()))  
          })
-     }) 
-
-     _boardGrid.forEach(grid => {
-         grid.addEventListener('input',event=>{
-             console.log(event)
-         })
-     }) 
+     })  
  
 
     return {
@@ -299,7 +294,6 @@ const nonGameFuncionality = (()=>{
     };
 
     _rematchBtn.addEventListener("click",()=>{
-        gameLogic.changePlayState()
         setTimeout(()=>{
             _rematchBtn.classList.remove("visible")
             setTimeout(()=>{
