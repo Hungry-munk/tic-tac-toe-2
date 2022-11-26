@@ -112,20 +112,19 @@ const gameLogic = (()=>{
     const isMovesLeft = (theBoard)=> theBoard.includes(null);
 
     const evaluate = (theBoard, currentPlayer)=> {
-        if (!!hasWon(theBoard)[0]) {
-            const winningPlayer = document.querySelector(`[cellNumber = "${hasWon(theBoard)[0][0]}"]`).textContent
-            if (currentPlayer === winningPlayer) 
-                return 10
-            return -10
+        if (!!hasWon(theBoard)[0]) { 
+            if (currentPlayer === hasWon(theBoard)[1].sign) 
+                return 100
+            return -100
         }
         return 0
     }
 
     const miniMax = (theBoard, depth, isMax) => {
-        const score = evaluate(theBoard)
+        const score = evaluate(theBoard,"O")
         console.log(score)
-        if (score == 10 ) return score + depth
-        if (score == -10 ) return score - depth
+        if (score == 100 ) return score + depth
+        if (score == -100 ) return score - depth
         if (!isMovesLeft(theBoard)) return 0;
 
         if (isMax) {
