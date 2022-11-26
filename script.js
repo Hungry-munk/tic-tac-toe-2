@@ -46,16 +46,15 @@ const gameLogic = (()=>{
     ];
     let play = false;
 
-    const changePlayState = ()=>{
-        play = !play
-    }
+    const enablePlay = ()=> play = true
+    const disablePlay = ()=> play=false
 
     const playStatus = ()=> {
         return play
     }
 
     const hasWon = (theBoard) => {
-        const currentPlayer = gamefunctionality.getPreviousPlayer(board.getBoard())
+        const currentPlayer = gamefunctionality.getPreviousPlayer(theBoard)
 
         const winningCondition = _winningConditions.find(winningCondition => {
             if  ((theBoard[winningCondition[0]] === theBoard[winningCondition[1]]) && (
@@ -76,7 +75,7 @@ const gameLogic = (()=>{
         setTimeout(()=>{
             if (play) if (currentPlayer.isAi && board.getBoard().includes(null)) {
                 board.makeMove(document.querySelector(`[cellNumber = "${
-                    findBestMove(board.getBoard() , currentPlayer.sign)}"]`), currentPlayer)
+                    findBestMove(board.getBoard() , "O")}"]`), currentPlayer)
             };
         _htmlboard.style.pointerEvents = "auto"
         },400)
@@ -86,23 +85,19 @@ const gameLogic = (()=>{
 
         const winningCombination = hasWon(board.getBoard())[0]
         const currentPlayer = gamefunctionality.getCurrentPlayer(board.getBoard())
-
-        if (!winningCombination && play) AIMakeMove(currentPlayer)
+        if (!winningCombination && play && currentPlayer.isAi) AIMakeMove(currentPlayer)
         if (!winningCombination && !board.getBoard().includes(null)) {
             nonGameFuncionality.displayWinner("no one");
-            changePlayState()
+            disablePlay()
         }
-        if (!winningCombination) return
-
+        if (!winningCombination) return;
 
         const winner = entries[0].target.textContent === "X" ? 
             gamefunctionality.getPlayerX() : gamefunctionality.getPlayerO();
         _updateWinnerScore(entries[0].target.textContent);
         nonGameFuncionality.displayWinner(winner.name);
-        nonGameFuncionality.displayWinnerCombo(winningCombination)
-
-
-
+        nonGameFuncionality.displayWinnerCombo(winningCombination);
+        disablePlay()
     });
 
     const startBoardObserve = ()=>{
@@ -114,12 +109,7 @@ const gameLogic = (()=>{
     };
 
     // AI stuff
-    const isMovesLeft = (theBoard)=> {
-        for (let i = 0; i<9; i++) {
-            if (theBoard[i] == null) return true
-        }
-        return false
-    }
+    const isMovesLeft = (theBoard)=> theBoard.includes(null);
 
     const evaluate = (theBoard, currentPlayer)=> {
         if (!!hasWon(theBoard)[0]) {
@@ -131,52 +121,45 @@ const gameLogic = (()=>{
         return 0
     }
 
-    const miniMax = (theBoard, depth, isMax, currentPlayer) => {
-        const score = evaluate(theBoard ,currentPlayer)
-
-        if (score == 10) 
-            return score;
-            
-        if (score == -10)
-            return score;
-
-        if (!isMovesLeft(theBoard))
-            return 0;
+    const miniMax = (theBoard, depth, isMax) => {
+        const score = evaluate(theBoard)
+        console.log(score)
+        if (score == 10 ) return score + depth
+        if (score == -10 ) return score - depth
+        if (!isMovesLeft(theBoard)) return 0;
 
         if (isMax) {
-            let best = -Infinity
+            let bestScore = -Infinity
 
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
-                    theBoard[i] = currentPlayer;
-                    best = Math.max(best,miniMax(theBoard,depth++, !isMax,currentPlayer))
-                    theBoard[i] = null
+                    theBoard[i] = "O";
+                    bestScore = Math.max(bestScore,miniMax(theBoard,depth-1, false))
+                    theBoard[i] = null;
                 }
             };
-            return best
-        } 
-        else {
-            let best = Infinity
-            let oppositionPlayer = currentPlayer == "X" ? "X" : "O"
+            return bestScore
+        } else {
+            let bestScore = Infinity
             for (let i = 0; i < 9; i++) {
                 if(theBoard[i] == null) {
-                    theBoard[i] = oppositionPlayer;
-                    best = Math.min(best,miniMax(theBoard,depth++, !isMax,currentPlayer))
-                    theBoard[i] = null
+                    theBoard[i] = "X";
+                    bestScore = Math.min(bestScore,miniMax(theBoard,depth-1, true));
+                    theBoard[i] = null;
                 };
             };
-            return best
+            return bestScore
         };
+
     };
 
     const findBestMove = (theBoard,currentPlayer)=>{
         let bestVal = -Infinity
         let bestMove;
-
         for (let i = 0; i < 9; i++) {
             if(theBoard[i] == null) {
-                theBoard[i] = currentPlayer;
-                let moveVal = miniMax(theBoard,0, false,currentPlayer)
+                theBoard[i] = "O";
+                let moveVal = miniMax(theBoard,0, false,Infinity,-Infinity,"O")
                 theBoard[i] = null
                 
                 if (moveVal > bestVal) {
@@ -191,8 +174,9 @@ const gameLogic = (()=>{
     return {
         hasWon,
         startBoardObserve,
-        changePlayState,
         AIMakeMove,
+        enablePlay,
+        disablePlay,
 
     }
 })();
@@ -253,13 +237,7 @@ const gamefunctionality = (()=>{
          grid.addEventListener('click',event=>{
              board.makeMove(event.target,getCurrentPlayer(board.getBoard()))  
          })
-     }) 
-
-     _boardGrid.forEach(grid => {
-         grid.addEventListener('input',event=>{
-             console.log(event)
-         })
-     }) 
+     })  
  
 
     return {
@@ -313,8 +291,7 @@ const nonGameFuncionality = (()=>{
         });
     };
 
-    const restartGame = ()=>{
-        gameLogic.changePlayState()
+    _rematchBtn.addEventListener("click",()=>{
         setTimeout(()=>{
             _rematchBtn.classList.remove("visible")
             setTimeout(()=>{
@@ -333,7 +310,7 @@ const nonGameFuncionality = (()=>{
                             });
                             _board.classList.remove("hidden");
                             setTimeout(()=>{
-                                gameLogic.changePlayState()
+                                gameLogic.enablePlay()
                                 if (gamefunctionality.getPlayerX().isAi) 
                                     gameLogic.AIMakeMove(gamefunctionality.getPlayerX());
                             },1)
@@ -342,7 +319,7 @@ const nonGameFuncionality = (()=>{
                 },300)
             },300)
         },200);
-    };
+    })
 
     _startBtn.addEventListener("click",()=>{
         const __inputX = document.querySelector("#nameInput1")
@@ -374,7 +351,7 @@ const nonGameFuncionality = (()=>{
             return
         };
 
-        gameLogic.changePlayState()
+        gameLogic.enablePlay()
 
         gamefunctionality.updatePlayers(
             __inputX.value,
@@ -401,9 +378,7 @@ const nonGameFuncionality = (()=>{
         },900)
     })
 
-    _rematchBtn.addEventListener("click",restartGame)
     _backButton.addEventListener("click",()=>{
-        gameLogic.changePlayState()
         _board.classList.add("hiddenBoard")
         board.cleanBoard()
         setTimeout(()=>{
