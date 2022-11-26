@@ -160,7 +160,6 @@ const gameLogic = (()=>{
     const findBestMove = (theBoard,currentPlayer)=>{
         let bestVal = -Infinity
         let bestMove;
-        console.log(currentPlayer)
         for (let i = 0; i < 9; i++) {
             if(theBoard[i] == null) {
                 theBoard[i] = currentPlayer;
