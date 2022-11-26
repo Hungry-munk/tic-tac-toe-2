@@ -153,7 +153,7 @@ const gameLogic = (()=>{
 
     };
 
-    const findBestMove = (theBoard,currentPlayer)=>{
+    const findBestMove = (theBoard)=>{
         let bestVal = -Infinity
         let bestMove;
         for (let i = 0; i < 9; i++) {
